@@ -41,7 +41,6 @@ class Login extends Component{
     }
     //submit Login handler to send a request to the node backend
     submitLogin = (e) => {
-        var headers = new Headers();
         //prevent page from refresh
         e.preventDefault();
         const data = {
@@ -85,10 +84,16 @@ class Login extends Component{
                         </div>
                         
                             <div className="form-group">
-                                <input onChange = {this.usernameChangeHandler} type="text" className="form-control" name="username" placeholder="Username"/>
+                                <input onChange = {this.usernameChangeHandler} type="text" className="form-control"
+                                       name="username" placeholder="Username" required={true}
+                                       oninvalid="this.setCustomValidity('Please enter username')"
+                                       oninput="this.setCustomValidity('')"/>
                             </div>
                             <div className="form-group">
-                                <input onChange = {this.passwordChangeHandler} type="password" className="form-control" name="password" placeholder="Password"/>
+                                <input onChange = {this.passwordChangeHandler} type="password" className="form-control"
+                                       name="password" placeholder="Password" required={true}
+                                       oninvalid="this.setCustomValidity('Please enter password')"
+                                       oninput="this.setCustomValidity('')"/>
                             </div>
                             <button onClick = {this.submitLogin} className="btn btn-primary">Login</button>
                     </div>

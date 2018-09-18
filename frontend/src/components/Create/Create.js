@@ -40,7 +40,7 @@ class Create extends Component{
         //prevent page from refresh
         e.preventDefault();
         const data = {
-            bookId : this.state.bookId,
+            bookId : parseInt(this.state.bookId, 10),
             bookTitle : this.state.bookTitle,
             bookAuthor: this.state.bookAuthor
         }
@@ -51,8 +51,11 @@ class Create extends Component{
                 console.log("Status Code : ",response.status);
                 if(response.status === 200){
                     console.log("Redirecting");
-                    <Redirect to={"/home"}/>
+                    <Redirect to="/home"/>
                 }
+            })
+            .catch(error => {
+                console.log(error.response);
             });
     }
     render(){
@@ -65,15 +68,24 @@ class Create extends Component{
                 {redirectVar}
                 <div className="container">
                         <div style={{width: '30%'}} className="form-group">
-                            <input  onChange={this.bookIdChangeHandler} type="number" className="form-control" name="BookID" placeholder="Book ID"/>
+                            <input  onChange={this.bookIdChangeHandler} type="number" className="form-control"
+                                    name="BookID" placeholder="Book ID" required={true}
+                                    oninput="this.setCustomValidity('')"
+                                    oninvalid="this.setCustomValidity('Please enter Book ID')"/>
                         </div>
                         <br/>
                         <div style={{width: '30%'}} className="form-group">
-                                <input  onChange={this.bookTitleChangeHandler} type="text" className="form-control" name="Title" placeholder="Book Title"/>
+                                <input  onChange={this.bookTitleChangeHandler} type="text" className="form-control"
+                                        name="Title" placeholder="Book Title" required={true}
+                                        oninput="this.setCustomValidity('')"
+                                        oninvalid="this.setCustomValidity('Please enter Book Title')"/>
                         </div>
                         <br/>
                         <div style={{width: '30%'}} className="form-group">
-                                <input  onChange={this.bookAuthorChangeHandler} type="text" className="form-control" name="Author" placeholder="Book Author"/>
+                                <input  onChange={this.bookAuthorChangeHandler} type="text" className="form-control"
+                                        name="Author" placeholder="Book Author" required={true}
+                                        oninput="this.setCustomValidity('')"
+                                        oninvalid="this.setCustomValidity('Please enter Book Author')"/>
                         </div>
                         <br/>
                         <div style={{width: '30%'}}>

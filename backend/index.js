@@ -60,13 +60,25 @@ app.post('/login',function(req,res){
 app.post('/create',function(req,res){
     console.log("Inside create Post Request");
     console.log("Req Body : ",req.body);
-    var newBook = {BookID: req.body.bookId, Title: req.body.bookTitle, Author : req.body.bookAuthor};
-    books.push(newBook);
-    res.writeHead(200,{
-        'Content-Type' : 'application/plain'
-    });
-    res.end("Book created successfully");
-    console.log("Book Added Successfully!!!!");
+    if (books.find(function (book) {
+        return book.BookID ===  req.body.bookId;
+    })){
+        res.writeHead(409,{
+            'Content-Type' : 'application/plain'
+        });
+        res.end("Book already exist");
+        console.log("Book already exist");
+    }
+    else {
+        var newBook = {BookID: req.body.bookId, Title: req.body.bookTitle, Author : req.body.bookAuthor};
+        books.push(newBook);
+        res.writeHead(201,{
+            'Content-Type' : 'application/plain'
+        });
+        res.end("Book created successfully");
+        console.log("Book Added Successfully!!!!");
+    }
+
 });
 
 //Route to get All Books when user visits the Home Page
@@ -87,6 +99,11 @@ app.delete('/delete/:bookId', function (req, res) {
     }).indexOf(parseInt(req.params.bookId,10));
     if(index === -1){
         console.log("Book Not Found");
+        res.writeHead(404,{
+            'Content-Type' : 'application/plain'
+        });
+        res.end("Book Not Found");
+
     } else {
         books.splice(index, 1);
         res.writeHead(200,{
@@ -94,7 +111,6 @@ app.delete('/delete/:bookId', function (req, res) {
         });
         res.end("Book created successfully");
         console.log("Book : " + req.params.bookId + " was removed successfully");
-
     }
 });
 
