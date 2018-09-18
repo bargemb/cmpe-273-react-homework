@@ -39,30 +39,48 @@ class Login extends Component{
             password : e.target.value
         })
     }
+
+    validateForm() {
+        const inputs = document.querySelectorAll('input');
+        const error = document.getElementById('requiredError');
+        let isFormValid = true;
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].value == ""){
+                error.textContent = inputs[i].name + " is required field";
+                isFormValid = false;
+                break;
+            }
+        }
+        return isFormValid;
+    }
+
     //submit Login handler to send a request to the node backend
     submitLogin = (e) => {
         //prevent page from refresh
         e.preventDefault();
-        const data = {
-            username : this.state.username,
-            password : this.state.password
+
+        if (this.validateForm()) {
+            const data = {
+                username : this.state.username,
+                password : this.state.password
+            }
+            //set the with credentials to true
+            axios.defaults.withCredentials = true;
+            //make a post request with the user data
+            axios.post('http://localhost:3001/login',data)
+                .then(response => {
+                    console.log("Status Code : ",response.status);
+                    if(response.status === 200){
+                        this.setState({
+                            authFlag : true
+                        })
+                    }else{
+                        this.setState({
+                            authFlag : false
+                        })
+                    }
+                });
         }
-        //set the with credentials to true
-        axios.defaults.withCredentials = true;
-        //make a post request with the user data
-        axios.post('http://localhost:3001/login',data)
-            .then(response => {
-                console.log("Status Code : ",response.status);
-                if(response.status === 200){
-                    this.setState({
-                        authFlag : true
-                    })
-                }else{
-                    this.setState({
-                        authFlag : false
-                    })
-                }
-            });
     }
 
     render(){
@@ -96,6 +114,7 @@ class Login extends Component{
                                        oninput="this.setCustomValidity('')"/>
                             </div>
                             <button onClick = {this.submitLogin} className="btn btn-primary">Login</button>
+                            <div className="error" id="requiredError" />
                     </div>
                 </div>
             </div>
