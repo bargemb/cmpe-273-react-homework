@@ -36,14 +36,13 @@ var Users = [{
 }]
 
 var books = [
-    {"BookID" : "1", "Title" : "Book 1", "Author" : "Author 1"},
-    {"BookID" : "2", "Title" : "Book 2", "Author" : "Author 2"},
-    {"BookID" : "3", "Title" : "Book 3", "Author" : "Author 3"}
+    {"BookID" : 1, "Title" : "Book 1", "Author" : "Author 1"},
+    {"BookID" : 2, "Title" : "Book 2", "Author" : "Author 2"},
+    {"BookID" : 3, "Title" : "Book 3", "Author" : "Author 3"}
 ]
 
 //Route to handle Post Request Call
 app.post('/login',function(req,res){
-
     console.log("Inside Login Post Request");
     console.log("Req Body : ",req.body);
     Users.filter(function(user){
@@ -58,6 +57,18 @@ app.post('/login',function(req,res){
     })
 });
 
+app.post('/create',function(req,res){
+    console.log("Inside create Post Request");
+    console.log("Req Body : ",req.body);
+    var newBook = {BookID: req.body.bookId, Title: req.body.bookTitle, Author : req.body.bookAuthor};
+    books.push(newBook);
+    res.writeHead(200,{
+        'Content-Type' : 'application/plain'
+    });
+    res.end("Book created successfully");
+    console.log("Book Added Successfully!!!!");
+});
+
 //Route to get All Books when user visits the Home Page
 app.get('/home', function(req,res){
     console.log("Inside Home Login");
@@ -67,7 +78,26 @@ app.get('/home', function(req,res){
     console.log("Books : ",JSON.stringify(books));
     res.end(JSON.stringify(books));
 
-})
+});
+
+app.delete('/delete/:bookId', function (req, res) {
+    console.log("Inside delete request");
+    var index = books.map(function(book){
+        return book.BookID;
+    }).indexOf(parseInt(req.params.bookId,10));
+    if(index === -1){
+        console.log("Book Not Found");
+    } else {
+        books.splice(index, 1);
+        res.writeHead(200,{
+            'Content-Type' : 'application/plain'
+        });
+        res.end("Book created successfully");
+        console.log("Book : " + req.params.bookId + " was removed successfully");
+
+    }
+});
+
 //start your server on port 3001
 app.listen(3001);
 console.log("Server Listening on port 3001");
